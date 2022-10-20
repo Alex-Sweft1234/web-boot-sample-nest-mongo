@@ -4,7 +4,13 @@ import { AuthDto } from './dto/auth.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { compare, genSalt, hash } from 'bcryptjs';
 import { ModelType } from '@typegoose/typegoose/lib/types';
-import { SUCCESS_REGISTRATION, SUCCESS_STATUS_REQUEST, USER_NOT_FOUND, WRONG_PASSWORD_FOUND } from './auth.constants';
+import {
+  SUCCESS_AUTH,
+  SUCCESS_REGISTRATION,
+  SUCCESS_STATUS_REQUEST,
+  USER_NOT_FOUND,
+  WRONG_PASSWORD_FOUND,
+} from './auth.constants';
 import { JwtService } from '@nestjs/jwt';
 import { response } from 'express';
 
@@ -48,8 +54,13 @@ export class AuthService {
 
   async login(email: string) {
     const payload = { email };
+    const token = await this.jwtService.signAsync(payload);
+
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      data: { access_token: token },
+      statusCode: HttpStatus.CREATED,
+      message: SUCCESS_AUTH,
+      success: SUCCESS_STATUS_REQUEST,
     };
   }
 }
