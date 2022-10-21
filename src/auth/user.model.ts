@@ -16,19 +16,35 @@ export class UserModel extends TimeStamps {
 
 export class registerResponse {
   @ApiProperty()
-  @prop()
   data: any;
 
   @ApiProperty()
-  @prop()
+  statusCode: number;
+
+  @ApiProperty()
   message: string;
 
   @ApiProperty()
-  @prop()
-  status: number;
+  success: string;
+}
+
+export class PrivateToken {
+  @ApiProperty()
+  access_token: string;
 }
 
 export class loginResponse {
+  @ApiProperty({ type: PrivateToken })
+  data: {
+    access_token: string;
+  };
+
   @ApiProperty()
-  access_token: string;
+  statusCode: number;
+
+  @ApiProperty()
+  message: string;
+
+  @ApiProperty()
+  success: string;
 }

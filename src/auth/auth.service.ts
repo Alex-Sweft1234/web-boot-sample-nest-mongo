@@ -1,18 +1,11 @@
 import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { registerResponse, UserModel } from './user.model';
+import { loginResponse, registerResponse, UserModel } from './user.model';
 import { AuthDto } from './dto/auth.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { compare, genSalt, hash } from 'bcryptjs';
 import { ModelType } from '@typegoose/typegoose/lib/types';
-import {
-  SUCCESS_AUTH,
-  SUCCESS_REGISTRATION,
-  SUCCESS_STATUS_REQUEST,
-  USER_NOT_FOUND,
-  WRONG_PASSWORD_FOUND,
-} from './auth.constants';
+import { STATUS, MESSAGE } from './auth.constants';
 import { JwtService } from '@nestjs/jwt';
-import { response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -21,20 +14,20 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async createUser(dto: AuthDto) {
+  async createUser(dto: AuthDto): Promise<registerResponse> {
     const salt = await genSalt(10);
     const newUser = new this.userModel({
       email: dto.login,
       passwordHash: await hash(dto.password, salt),
     });
 
-    const response = await newUser.save();
+    await newUser.save();
 
     return {
-      data: response,
+      data: {},
       statusCode: HttpStatus.CREATED,
-      message: SUCCESS_REGISTRATION,
-      success: SUCCESS_STATUS_REQUEST,
+      message: MESSAGE.SUCCESS_REGISTRATION,
+      success: STATUS.SUCCESS_STATUS_REQUEST,
     };
   }
 
@@ -44,23 +37,23 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<Pick<UserModel, 'email'>> {
     const user = await this.findUser(email);
-    if (!user) throw new UnauthorizedException(USER_NOT_FOUND);
+    if (!user) throw new UnauthorizedException(MESSAGE.USER_NOT_FOUND);
 
     const isCorrectPassword = await compare(password, user.passwordHash);
-    if (!isCorrectPassword) throw new UnauthorizedException(WRONG_PASSWORD_FOUND);
+    if (!isCorrectPassword) throw new UnauthorizedException(MESSAGE.WRONG_PASSWORD_FOUND);
 
     return { email: user.email };
   }
 
-  async login(email: string) {
+  async login(email: string): Promise<loginResponse> {
     const payload = { email };
     const token = await this.jwtService.signAsync(payload);
 
     return {
       data: { access_token: token },
       statusCode: HttpStatus.CREATED,
-      message: SUCCESS_AUTH,
-      success: SUCCESS_STATUS_REQUEST,
+      message: MESSAGE.SUCCESS_AUTH,
+      success: STATUS.SUCCESS_STATUS_REQUEST,
     };
   }
 }
