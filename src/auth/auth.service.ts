@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { loginResponse, registerResponse, UserModel } from './user.model';
+import { SignupModel, SigninModel, loginResponse, registerResponse } from './auth.model';
 import { AuthDto } from './dto/auth.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { compare, genSalt, hash } from 'bcryptjs';
@@ -11,14 +11,14 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(UserModel) private readonly userModel: ModelType<UserModel>,
+    @InjectModel(SignupModel) private readonly signupModel: ModelType<SignupModel>,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {}
 
   async createUser(dto: AuthDto): Promise<registerResponse> {
     const salt = await genSalt(10);
-    const newUser = new this.userModel({
+    const newUser = new this.signupModel({
       email: dto.login,
       passwordHash: await hash(dto.password, salt),
     });
@@ -34,10 +34,10 @@ export class AuthService {
   }
 
   async findUser(email: string) {
-    return this.userModel.findOne({ email }).exec();
+    return this.signupModel.findOne({ email }).exec();
   }
 
-  async validateUser(email: string, password: string): Promise<Pick<UserModel, 'email'>> {
+  async validateUser(email: string, password: string): Promise<Pick<SigninModel, 'email'>> {
     const user = await this.findUser(email);
     if (!user) throw new UnauthorizedException(MESSAGE.USER_NOT_FOUND);
 

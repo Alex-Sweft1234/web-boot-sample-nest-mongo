@@ -13,8 +13,7 @@ import { AuthDto, RefreshDto } from './dto/auth.dto';
 import { ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { MESSAGE } from './auth.constants';
-import { loginResponse, registerResponse } from './user.model';
-import { JwtAuthGuard } from './guards/jwt.guard';
+import { loginResponse, registerResponse } from './auth.model';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { UserEmail } from '../_decorators/user-email.decorator';
 

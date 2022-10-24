@@ -2,7 +2,7 @@ import { Controller, Get, HttpStatus, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ConstantModel } from './constant.model';
 import { ConstantService } from './constant.service';
-import { Oauth2Guard } from '../auth/guards/oauth2.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 
 @ApiTags('Constant-controller')
 @ApiBearerAuth()
@@ -17,7 +17,7 @@ export class ConstantController {
     links: {},
   })
   // Пример приватного роута
-  @UseGuards(Oauth2Guard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   async get() {
     return this.constantService.get();

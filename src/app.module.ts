@@ -7,7 +7,7 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule,
     TypegooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
