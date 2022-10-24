@@ -5,16 +5,20 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { AuthDto } from './dto/auth.dto';
+import { AuthDto, RefreshDto } from './dto/auth.dto';
 import { ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { MESSAGE } from './auth.constants';
 import { loginResponse, registerResponse } from './user.model';
+import { JwtAuthGuard } from './guards/jwt.guard';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { UserEmail } from '../_decorators/user-email.decorator';
 
-@ApiTags('User-controller')
+@ApiTags('Auth-controller')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -46,6 +50,20 @@ export class AuthController {
   @Post('signin')
   async login(@Body() { login, password }: AuthDto): Promise<loginResponse> {
     const { email } = await this.authService.validateUser(login, password);
-    return this.authService.login(email);
+    return this.authService.login({ email });
+  }
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get successfully',
+    type: loginResponse,
+    links: {},
+  })
+  @UseGuards(JwtRefreshStrategy)
+  @UsePipes(new ValidationPipe())
+  @HttpCode(HttpStatus.OK)
+  @Post('refresh')
+  async refresh(@Body() { token }: RefreshDto, @UserEmail() email: string): Promise<loginResponse> {
+    return this.authService.refresh(email, token);
   }
 }

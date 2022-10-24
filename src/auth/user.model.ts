@@ -30,13 +30,21 @@ export class registerResponse {
 
 export class PrivateToken {
   @ApiProperty()
+  token_type: string;
+
+  @ApiProperty()
   access_token: string;
+
+  @ApiProperty()
+  refresh_token: string;
 }
 
 export class loginResponse {
   @ApiProperty({ type: PrivateToken })
   data: {
+    token_type: string;
     access_token: string;
+    refresh_token: string;
   };
 
   @ApiProperty()

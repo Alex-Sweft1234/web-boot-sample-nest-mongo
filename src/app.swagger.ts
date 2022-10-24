@@ -5,7 +5,6 @@ export const config = new DocumentBuilder()
   .setTitle(SWAGGER.TITLE)
   .setVersion(SWAGGER.VERSION)
   .setDescription(SWAGGER.DESCRIPTION)
-  .addBasicAuth()
   .addBearerAuth()
   .build();
 

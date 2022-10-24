@@ -7,13 +7,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getJWTConfig } from '../_configs/jwt.config';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './strategies/jwt.strategy';
+import { Oauth2Strategy } from './strategies/oauth2.strategy';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, Oauth2Strategy],
   imports: [
-    ConfigModule.forRoot(),
     TypegooseModule.forFeature([
       {
         typegooseClass: UserModel,
@@ -22,6 +21,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
         },
       },
     ]),
+    ConfigModule.forRoot(),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

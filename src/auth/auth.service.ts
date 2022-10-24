@@ -4,13 +4,15 @@ import { AuthDto } from './dto/auth.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { compare, genSalt, hash } from 'bcryptjs';
 import { ModelType } from '@typegoose/typegoose/lib/types';
-import { STATUS, MESSAGE } from './auth.constants';
+import { MESSAGE, STATUS } from './auth.constants';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(UserModel) private readonly userModel: ModelType<UserModel>,
+    private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -45,14 +47,42 @@ export class AuthService {
     return { email: user.email };
   }
 
-  async login(email: string): Promise<loginResponse> {
-    const payload = { email };
-    const token = await this.jwtService.signAsync(payload);
+  async login(payload: { email: string }): Promise<loginResponse> {
+    const type = 'bearer';
+    const access = await this.jwtService.signAsync(payload, {
+      secret: this.configService.get('NEST_ACCESS_JWT_SECRET'),
+      expiresIn: this.configService.get('NEST_ACCESS_JWT_TIME'),
+    });
+    const refresh = await this.jwtService.signAsync(payload, {
+      secret: this.configService.get('NEST_REFRESH_JWT_SECRET'),
+    });
 
     return {
-      data: { access_token: token },
+      data: { token_type: type, access_token: access, refresh_token: refresh },
       statusCode: HttpStatus.CREATED,
       message: MESSAGE.SUCCESS_AUTH,
+      success: STATUS.SUCCESS_STATUS_REQUEST,
+    };
+  }
+
+  async refresh(email: string, token: string): Promise<loginResponse> {
+    const type = 'bearer';
+    const payload = { email };
+    const access = await this.jwtService.signAsync(payload, {
+      secret: this.configService.get('NEST_ACCESS_JWT_SECRET'),
+      expiresIn: this.configService.get('NEST_ACCESS_JWT_TIME'),
+    });
+    const refresh = await this.jwtService.signAsync(payload, {
+      secret: this.configService.get('NEST_REFRESH_JWT_SECRET'),
+    });
+    // const isVerify = await this.jwtService.verifyAsync(token);
+    //
+    // if (!isVerify) throw new UnauthorizedException(MESSAGE.INVALID_UPDATE_ACCESS_TOKEN);
+
+    return {
+      data: { token_type: type, access_token: access, refresh_token: refresh },
+      statusCode: HttpStatus.OK,
+      message: MESSAGE.SUCCESS_UPDATE_ACCESS_TOKEN,
       success: STATUS.SUCCESS_STATUS_REQUEST,
     };
   }

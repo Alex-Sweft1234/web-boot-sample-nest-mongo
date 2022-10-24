@@ -8,4 +8,6 @@ export const MESSAGE = {
   ALREADY_REGISTER_ERROR: 'Такой пользователь уже был ранее зарегистрирован',
   USER_NOT_FOUND: 'Пользователь с таким email не найден',
   WRONG_PASSWORD_FOUND: 'Неверный пароль',
+  SUCCESS_UPDATE_ACCESS_TOKEN: 'Токен успешно обновлен',
+  INVALID_UPDATE_ACCESS_TOKEN: 'Токен обновления недействителен',
 };
