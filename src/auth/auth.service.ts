@@ -49,12 +49,10 @@ export class AuthService {
 
   async login(payload: { email: string }): Promise<loginResponse> {
     const type = 'bearer';
-    const access = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('NEST_ACCESS_JWT_SECRET'),
-      expiresIn: this.configService.get('NEST_ACCESS_JWT_TIME'),
-    });
+    const access = await this.jwtService.signAsync(payload);
     const refresh = await this.jwtService.signAsync(payload, {
       secret: this.configService.get('NEST_REFRESH_JWT_SECRET'),
+      expiresIn: this.configService.get('NEST_REFRESH_JWT_TIME'),
     });
 
     return {
@@ -65,25 +63,29 @@ export class AuthService {
     };
   }
 
-  async refresh(email: string, token: string): Promise<loginResponse> {
-    const type = 'bearer';
-    const payload = { email };
-    const access = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('NEST_ACCESS_JWT_SECRET'),
-      expiresIn: this.configService.get('NEST_ACCESS_JWT_TIME'),
-    });
-    const refresh = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('NEST_REFRESH_JWT_SECRET'),
-    });
-    // const isVerify = await this.jwtService.verifyAsync(token);
-    //
-    // if (!isVerify) throw new UnauthorizedException(MESSAGE.INVALID_UPDATE_ACCESS_TOKEN);
+  async refresh(token: string): Promise<loginResponse> {
+    try {
+      const { email } = await this.jwtService.verifyAsync(token, {
+        secret: this.configService.get('NEST_REFRESH_JWT_SECRET'),
+      });
 
-    return {
-      data: { token_type: type, access_token: access, refresh_token: refresh },
-      statusCode: HttpStatus.OK,
-      message: MESSAGE.SUCCESS_UPDATE_ACCESS_TOKEN,
-      success: STATUS.SUCCESS_STATUS_REQUEST,
-    };
+      const payload = { email };
+
+      const type = 'bearer';
+      const access = await this.jwtService.signAsync(payload);
+      const refresh = await this.jwtService.signAsync(payload, {
+        secret: this.configService.get('NEST_REFRESH_JWT_SECRET'),
+        expiresIn: this.configService.get('NEST_REFRESH_JWT_TIME'),
+      });
+
+      return {
+        data: { token_type: type, access_token: access, refresh_token: refresh },
+        statusCode: HttpStatus.OK,
+        message: MESSAGE.SUCCESS_UPDATE_ACCESS_TOKEN,
+        success: STATUS.SUCCESS_STATUS_REQUEST,
+      };
+    } catch {
+      throw new UnauthorizedException(MESSAGE.INVALID_UPDATE_ACCESS_TOKEN);
+    }
   }
 }

@@ -58,11 +58,11 @@ export class AuthController {
     type: loginResponse,
     links: {},
   })
-  @UseGuards(JwtRefreshStrategy)
+  // @UseGuards(JwtRefreshStrategy)
   @UsePipes(new ValidationPipe())
   @HttpCode(HttpStatus.OK)
   @Post('refresh')
-  async refresh(@Body() { token }: RefreshDto, @UserEmail() email: string): Promise<loginResponse> {
-    return this.authService.refresh(email, token);
+  async refresh(@Body() { token }: RefreshDto): Promise<loginResponse> {
+    return this.authService.refresh(token);
   }
 }

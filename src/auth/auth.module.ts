@@ -15,7 +15,7 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
   providers: [AuthService, JwtStrategy, JwtRefreshStrategy],
   imports: [
     ConfigModule,
-    PassportModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     TypegooseModule.forFeature([
       {
         typegooseClass: SignupModel,
