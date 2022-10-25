@@ -9,7 +9,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new UnauthorizedExceptionFilter());
-
   app.use(
     ['/api/v1/swagger-ui', '/api/v1/swagger-ui-json'],
     basicAuth({

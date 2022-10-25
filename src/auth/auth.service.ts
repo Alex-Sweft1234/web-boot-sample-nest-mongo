@@ -53,8 +53,8 @@ export class AuthService {
     const type = 'bearer';
     const access = await this.jwtService.signAsync(payload);
     const refresh = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('NEST_REFRESH_JWT_SECRET'),
-      expiresIn: this.configService.get('NEST_REFRESH_JWT_TIME'),
+      secret: this.configService.get<string>('NEST_REFRESH_JWT_SECRET'),
+      expiresIn: this.configService.get<string>('NEST_REFRESH_JWT_TIME'),
     });
 
     return {
@@ -71,8 +71,8 @@ export class AuthService {
     const type = 'bearer';
     const access = await this.jwtService.signAsync(payload);
     const refresh = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('NEST_REFRESH_JWT_SECRET'),
-      expiresIn: this.configService.get('NEST_REFRESH_JWT_TIME'),
+      secret: this.configService.get<string>('NEST_REFRESH_JWT_SECRET'),
+      expiresIn: this.configService.get<string>('NEST_REFRESH_JWT_TIME'),
     });
 
     return {

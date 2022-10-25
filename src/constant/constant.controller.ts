@@ -1,9 +1,11 @@
-import { Controller, Get, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, HttpStatus, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiResponse, ApiBasicAuth } from '@nestjs/swagger';
+import { BasicGuard } from 'src/_guards';
 import { ConstantModel } from './constant.model';
 import { ConstantService } from './constant.service';
 
 @ApiTags('Constant-controller')
+@ApiBasicAuth()
 @Controller('constant')
 export class ConstantController {
   constructor(private readonly constantService: ConstantService) {}
@@ -14,6 +16,7 @@ export class ConstantController {
     type: ConstantModel,
     links: {},
   })
+  @UseGuards(BasicGuard)
   @Get()
   async get() {
     return this.constantService.get();

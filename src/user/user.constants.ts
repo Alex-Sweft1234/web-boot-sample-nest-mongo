@@ -1,5 +1,5 @@
 export const STATUS = {
-  SUCCESS_STATUS_REQUEST: 'Successful request',
+  SUCCESS_STATUS_REQUEST: 'Successful Request',
 };
 
 export const MESSAGE = {

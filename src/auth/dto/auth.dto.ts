@@ -38,9 +38,3 @@ export class SigninDto {
   @IsNotEmpty({ message: () => 'Пароль должен быть пустым' })
   password: string;
 }
-
-export class RefreshDto {
-  @ApiProperty()
-  @IsString({ message: () => 'Некорректный токен' })
-  token: string;
-}

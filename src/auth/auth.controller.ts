@@ -10,14 +10,15 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { SignupDto, SigninDto } from './dto/auth.dto';
-import { ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { MESSAGE } from './auth.constants';
 import { SignupResponse, SigninResponse } from './auth.model';
-import { JwtRefreshTokenGuard } from '../_guards/jwt-refresh.guard';
-import { UserEmail } from '../_decorators/user-email.decorator';
+import { BasicGuard, JwtRefreshTokenGuard } from '../_guards';
+import { UserEmail } from '../_decorators';
 
 @ApiTags('Auth-controller')
+@ApiBasicAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -28,6 +29,7 @@ export class AuthController {
     type: SignupResponse,
     links: {},
   })
+  @UseGuards(BasicGuard)
   @UsePipes(new ValidationPipe())
   @Post('signup')
   async signup(@Body() dto: SignupDto): Promise<SignupResponse> {
@@ -44,6 +46,7 @@ export class AuthController {
     type: SigninResponse,
     links: {},
   })
+  @UseGuards(BasicGuard)
   @UsePipes(new ValidationPipe())
   @HttpCode(HttpStatus.OK)
   @Post('signin')
