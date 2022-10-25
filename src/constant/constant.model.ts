@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ConstantModel {
   @ApiProperty()
-  NOW: Date;
+  PROFILE: string;
 
   @ApiProperty()
-  PROFILE: string;
+  NOW: Date;
 }

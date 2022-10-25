@@ -1,17 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { prop } from '@typegoose/typegoose';
+import { UserModel } from '../user/user.model';
 import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 
-export interface SignupModel extends Base {}
-
-export class SignupModel extends TimeStamps {
-  @ApiProperty()
-  @prop({ unique: true })
-  email: string;
-
+export class SignupModel extends UserModel {
   @ApiProperty()
   @prop()
-  passwordHash: string;
+  password_hash: string;
 }
 
 export interface SigninModel extends Base {}
@@ -26,15 +21,15 @@ export class SigninModel extends TimeStamps {
   passwordHash: string;
 }
 
-export class registerResponse {
+export class SignupResponse {
   @ApiProperty()
   data: any;
 
   @ApiProperty()
   statusCode: number;
 
-  @ApiProperty()
-  message: string;
+  @ApiProperty({ type: () => [String] })
+  message: string[];
 
   @ApiProperty()
   success: string;
@@ -51,7 +46,7 @@ export class PrivateToken {
   refresh_token: string;
 }
 
-export class loginResponse {
+export class SigninResponse {
   @ApiProperty({ type: PrivateToken })
   data: {
     token_type: string;
@@ -62,8 +57,8 @@ export class loginResponse {
   @ApiProperty()
   statusCode: number;
 
-  @ApiProperty()
-  message: string;
+  @ApiProperty({ type: () => [String] })
+  message: string[];
 
   @ApiProperty()
   success: string;

@@ -9,12 +9,12 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { AuthDto, RefreshDto } from './dto/auth.dto';
+import { SignupDto, SigninDto, RefreshDto } from './dto/auth.dto';
 import { ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { MESSAGE } from './auth.constants';
-import { loginResponse, registerResponse } from './auth.model';
-import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { SignupResponse, SigninResponse } from './auth.model';
+import { JwtRefreshTokenGuard } from '../_guards/jwt-refresh.guard';
 import { UserEmail } from '../_decorators/user-email.decorator';
 
 @ApiTags('Auth-controller')
@@ -25,13 +25,13 @@ export class AuthController {
   @ApiCreatedResponse({
     status: HttpStatus.CREATED,
     description: 'Created successfully',
-    type: registerResponse,
+    type: SignupResponse,
     links: {},
   })
   @UsePipes(new ValidationPipe())
   @Post('signup')
-  async register(@Body() dto: AuthDto): Promise<registerResponse> {
-    const oldUser = await this.authService.findUser(dto.login);
+  async signup(@Body() dto: SignupDto): Promise<SignupResponse> {
+    const oldUser = await this.authService.findUser(dto.email);
     if (oldUser) {
       throw new BadRequestException(MESSAGE.ALREADY_REGISTER_ERROR);
     }
@@ -41,13 +41,13 @@ export class AuthController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get successfully',
-    type: loginResponse,
+    type: SigninResponse,
     links: {},
   })
   @UsePipes(new ValidationPipe())
   @HttpCode(HttpStatus.OK)
   @Post('signin')
-  async login(@Body() { login, password }: AuthDto): Promise<loginResponse> {
+  async signin(@Body() { login, password }: SigninDto): Promise<SigninResponse> {
     const { email } = await this.authService.validateUser(login, password);
     return this.authService.login({ email });
   }
@@ -55,14 +55,14 @@ export class AuthController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get successfully',
-    type: loginResponse,
+    type: SigninResponse,
     links: {},
   })
-  // @UseGuards(JwtRefreshStrategy)
+  @UseGuards(JwtRefreshTokenGuard)
   @UsePipes(new ValidationPipe())
   @HttpCode(HttpStatus.OK)
   @Post('refresh')
-  async refresh(@Body() { token }: RefreshDto): Promise<loginResponse> {
-    return this.authService.refresh(token);
+  async refresh(@UserEmail() email: string): Promise<SigninResponse> {
+    return this.authService.refresh(email);
   }
 }

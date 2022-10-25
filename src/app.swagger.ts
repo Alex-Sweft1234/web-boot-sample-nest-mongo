@@ -5,20 +5,14 @@ export const config = new DocumentBuilder()
   .setTitle(SWAGGER.TITLE)
   .setVersion(SWAGGER.VERSION)
   .setDescription(SWAGGER.DESCRIPTION)
-  .addBearerAuth()
-  // .addOAuth2({
-  //   type: 'oauth2',
-  //   flows: {
-  //     clientCredentials: {
-  //       tokenUrl: 'http://localhost:8080/api/signin',
-  //       scopes: {
-  //         read: 'Grant read-only access to all your data except for the account and user info',
-  //         write: 'Grant write-only access to all your data except for the account and user info',
-  //         profile: 'Grant read-only access to the account and user info only',
-  //       },
-  //     },
+  // .addBearerAuth(
+  //   {
+  //     type: 'http',
+  //     description: SWAGGER.BEARER_DESCRIPTION,
   //   },
-  // })
+  //   'Authorization',
+  // )
+  .addBearerAuth()
   .build();
 
 export const options = {

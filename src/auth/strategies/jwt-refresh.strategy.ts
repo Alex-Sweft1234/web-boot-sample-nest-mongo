@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { SignupModel } from '../auth.model';
+import { UserModel } from '../../user/user.model';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh-token') {
@@ -14,7 +14,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh-
     });
   }
 
-  async validate({ email }: Pick<SignupModel, 'email'>) {
+  async validate({ email }: Pick<UserModel, 'email'>) {
     return email;
   }
 }

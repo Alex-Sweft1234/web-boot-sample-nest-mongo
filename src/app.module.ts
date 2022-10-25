@@ -4,10 +4,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { getMongoConfig } from './_configs/mongo.config';
 import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    ConfigModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env', `${process.cwd()}/.env.${process.env.NODE_ENV}`],
+    }),
     TypegooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -15,6 +19,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     ConstantModule,
     AuthModule,
+    UserModule,
   ],
 })
 export class AppModule {}
