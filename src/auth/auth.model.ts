@@ -21,9 +21,20 @@ export class SigninModel extends TimeStamps {
   passwordHash: string;
 }
 
-export class SignupResponse {
+export class InfoUser {
   @ApiProperty()
-  data: any;
+  email: string;
+
+  @ApiProperty()
+  phone: string;
+}
+
+export class SignupResponse {
+  @ApiProperty({ type: InfoUser })
+  data: {
+    email: string;
+    phone: string;
+  };
 
   @ApiProperty()
   statusCode: number;

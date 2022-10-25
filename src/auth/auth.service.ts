@@ -16,6 +16,10 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  response(data: any, statusCode: number, message: string[], success: string) {
+    return { data, statusCode, message, success };
+  }
+
   async createUser({ first_name, email, phone, password }: SignupDto): Promise<SignupResponse> {
     const salt = await genSalt(10);
     const newUser = new this.signupModel({
@@ -27,12 +31,9 @@ export class AuthService {
 
     await newUser.save();
 
-    return {
-      data: {},
-      statusCode: HttpStatus.CREATED,
-      message: [MESSAGE.SUCCESS_REGISTRATION],
-      success: STATUS.SUCCESS_STATUS_REQUEST,
-    };
+    const data = { email, phone };
+
+    return this.response(data, HttpStatus.CREATED, [MESSAGE.SUCCESS_REGISTRATION], STATUS.SUCCESS_STATUS_REQUEST);
   }
 
   async findUser(email: string) {
@@ -57,12 +58,9 @@ export class AuthService {
       expiresIn: this.configService.get<string>('NEST_REFRESH_JWT_TIME'),
     });
 
-    return {
-      data: { token_type: type, access_token: access, refresh_token: refresh },
-      statusCode: HttpStatus.OK,
-      message: [MESSAGE.SUCCESS_AUTH],
-      success: STATUS.SUCCESS_STATUS_REQUEST,
-    };
+    const data = { token_type: type, access_token: access, refresh_token: refresh };
+
+    return this.response(data, HttpStatus.OK, [MESSAGE.SUCCESS_AUTH], STATUS.SUCCESS_STATUS_REQUEST);
   }
 
   async refresh(email: string): Promise<SigninResponse> {
@@ -75,11 +73,8 @@ export class AuthService {
       expiresIn: this.configService.get<string>('NEST_REFRESH_JWT_TIME'),
     });
 
-    return {
-      data: { token_type: type, access_token: access, refresh_token: refresh },
-      statusCode: HttpStatus.OK,
-      message: [MESSAGE.SUCCESS_UPDATE_ACCESS_TOKEN],
-      success: STATUS.SUCCESS_STATUS_REQUEST,
-    };
+    const data = { token_type: type, access_token: access, refresh_token: refresh };
+
+    return this.response(data, HttpStatus.OK, [MESSAGE.SUCCESS_UPDATE_ACCESS_TOKEN], STATUS.SUCCESS_STATUS_REQUEST);
   }
 }

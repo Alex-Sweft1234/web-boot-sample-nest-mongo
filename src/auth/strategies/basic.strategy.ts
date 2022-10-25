@@ -9,13 +9,12 @@ export class BasicStrategy extends PassportStrategy(Strategy) {
     super({ passReqToCallback: true });
   }
 
-  public validate = async (req, username, password): Promise<boolean> => {
-    if (
-      this.configService.get<string>('NEST_HTTP_BASIC_USER') === username &&
-      this.configService.get<string>('NEST_HTTP_BASIC_PASS') === password
-    ) {
-      return true;
-    }
-    throw new UnauthorizedException();
-  };
+  async validate(req, username, password): Promise<boolean> {
+    const userHttp = this.configService.get<string>('NEST_HTTP_BASIC_USER');
+    const passwordHttp = this.configService.get<string>('NEST_HTTP_BASIC_PASS');
+
+    if (userHttp !== username && passwordHttp !== password) throw new UnauthorizedException();
+
+    return true;
+  }
 }
