@@ -16,7 +16,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  response(data: any, statusCode: number, message: string[], success: string) {
+  response(data: any, statusCode: HttpStatus.CREATED | HttpStatus.OK, message: string[], success: string) {
     return { data, statusCode, message, success };
   }
 
