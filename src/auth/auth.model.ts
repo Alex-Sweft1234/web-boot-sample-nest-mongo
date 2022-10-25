@@ -18,7 +18,7 @@ export class SigninModel extends TimeStamps {
 
   @ApiProperty()
   @prop()
-  passwordHash: string;
+  password_hash: string;
 }
 
 export class InfoUser {
