@@ -6,6 +6,7 @@ export const getJWTConfig = async (configService: ConfigService): Promise<JwtMod
     secret: configService.get('NEST_ACCESS_JWT_SECRET'),
     signOptions: {
       expiresIn: configService.get('NEST_ACCESS_JWT_TIME'),
+      subject: 'access',
     },
   };
 };

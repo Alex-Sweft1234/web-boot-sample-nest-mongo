@@ -16,24 +16,16 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  response(data: any, statusCode: HttpStatus.CREATED | HttpStatus.OK, message: string[], success: string) {
-    return { data, statusCode, message, success };
-  }
-
-  async createUser({ first_name, email, phone, password }: SignupDto): Promise<SignupResponse> {
-    const salt = await genSalt(10);
-    const newUser = new this.signupModel({
-      first_name: first_name,
-      email: email,
-      phone: phone,
-      password_hash: await hash(password, salt),
+  async privateToken(payload: { email: string }) {
+    const token_type = 'bearer';
+    const access_token = await this.jwtService.signAsync(payload);
+    const refresh_token = await this.jwtService.signAsync(payload, {
+      secret: this.configService.get<string>('NEST_REFRESH_JWT_SECRET'),
+      expiresIn: this.configService.get<string>('NEST_REFRESH_JWT_TIME'),
+      subject: 'refresh',
     });
 
-    await newUser.save();
-
-    const data = { email, phone };
-
-    return this.response(data, HttpStatus.CREATED, [MESSAGE.SUCCESS_REGISTRATION], STATUS.SUCCESS_STATUS_REQUEST);
+    return { token_type, access_token, refresh_token };
   }
 
   async findUser(email: string) {
@@ -50,31 +42,44 @@ export class AuthService {
     return { email: user.email };
   }
 
-  async login(payload: { email: string }): Promise<SigninResponse> {
-    const type = 'bearer';
-    const access = await this.jwtService.signAsync(payload);
-    const refresh = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get<string>('NEST_REFRESH_JWT_SECRET'),
-      expiresIn: this.configService.get<string>('NEST_REFRESH_JWT_TIME'),
+  responseSuccessful(data: any, statusCode: HttpStatus.CREATED | HttpStatus.OK, message: string[], success: string) {
+    return { data, statusCode, message, success };
+  }
+
+  async createUser({ first_name, email, phone, password }: SignupDto): Promise<SignupResponse> {
+    const salt = await genSalt(10);
+    const newUser = new this.signupModel({
+      first_name: first_name,
+      email: email,
+      phone: phone,
+      password_hash: await hash(password, salt),
     });
 
-    const data = { token_type: type, access_token: access, refresh_token: refresh };
+    await newUser.save();
 
-    return this.response(data, HttpStatus.OK, [MESSAGE.SUCCESS_AUTH], STATUS.SUCCESS_STATUS_REQUEST);
+    return this.responseSuccessful(
+      { email, phone },
+      HttpStatus.CREATED,
+      [MESSAGE.SUCCESS_REGISTRATION],
+      STATUS.SUCCESS_STATUS_REQUEST,
+    );
+  }
+
+  async login(payload: { email: string }): Promise<SigninResponse> {
+    const privateToken = await this.privateToken(payload);
+
+    return this.responseSuccessful(privateToken, HttpStatus.OK, [MESSAGE.SUCCESS_AUTH], STATUS.SUCCESS_STATUS_REQUEST);
   }
 
   async refresh(email: string): Promise<SigninResponse> {
     const payload = { email };
+    const privateToken = await this.privateToken(payload);
 
-    const type = 'bearer';
-    const access = await this.jwtService.signAsync(payload);
-    const refresh = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get<string>('NEST_REFRESH_JWT_SECRET'),
-      expiresIn: this.configService.get<string>('NEST_REFRESH_JWT_TIME'),
-    });
-
-    const data = { token_type: type, access_token: access, refresh_token: refresh };
-
-    return this.response(data, HttpStatus.OK, [MESSAGE.SUCCESS_UPDATE_ACCESS_TOKEN], STATUS.SUCCESS_STATUS_REQUEST);
+    return this.responseSuccessful(
+      privateToken,
+      HttpStatus.OK,
+      [MESSAGE.SUCCESS_UPDATE_ACCESS_TOKEN],
+      STATUS.SUCCESS_STATUS_REQUEST,
+    );
   }
 }

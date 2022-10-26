@@ -4,10 +4,12 @@ import { AppModule } from './app.module';
 import * as basicAuth from 'express-basic-auth';
 import { config, options } from './app.swagger';
 import { UnauthorizedExceptionFilter } from './_filters/unauthorized-exception.filter';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
+  app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new UnauthorizedExceptionFilter());
   app.use(
     ['/api/v1/swagger-ui', '/api/v1/swagger-ui-json'],

@@ -25,7 +25,7 @@ export class SignupDto {
 }
 
 export class SigninDto {
-  @ApiProperty({ default: 'test@test.ru' })
+  @ApiProperty({ default: 'babaev@atoms.ru' })
   @IsEmail(
     {},
     { message: (validationArguments: ValidationArguments) => `Некорректный e-mail ${validationArguments.value}` },

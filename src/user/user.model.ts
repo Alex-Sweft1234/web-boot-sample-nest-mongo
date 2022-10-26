@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { prop } from '@typegoose/typegoose';
+import { Exclude } from 'class-transformer';
 import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { Types } from 'mongoose';
 

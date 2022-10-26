@@ -1,14 +1,4 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  UseGuards,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
+import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { SignupDto, SigninDto } from './dto/auth.dto';
 import { ApiBasicAuth, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
@@ -30,7 +20,6 @@ export class AuthController {
     links: {},
   })
   @UseGuards(BasicGuard)
-  @UsePipes(new ValidationPipe())
   @Post('signup')
   async signup(@Body() dto: SignupDto): Promise<SignupResponse> {
     const oldUser = await this.authService.findUser(dto.email);
@@ -47,7 +36,6 @@ export class AuthController {
     links: {},
   })
   @UseGuards(BasicGuard)
-  @UsePipes(new ValidationPipe())
   @HttpCode(HttpStatus.OK)
   @Post('signin')
   async signin(@Body() { login, password }: SigninDto): Promise<SigninResponse> {
@@ -62,7 +50,6 @@ export class AuthController {
     links: {},
   })
   @UseGuards(JwtRefreshTokenGuard)
-  @UsePipes(new ValidationPipe())
   @HttpCode(HttpStatus.OK)
   @Post('refresh')
   async refresh(@UserEmail() email: string): Promise<SigninResponse> {

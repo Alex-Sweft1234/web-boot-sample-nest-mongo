@@ -1,9 +1,10 @@
-import { Controller, Get, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, HttpStatus, UseGuards, Body, Param } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../_guards';
 import { UserService } from './user.service';
 import { UserResponse } from './user.model';
 import { UserEmail } from '../_decorators';
+import { UpdateUserDto } from './dto/user.dto';
 
 @ApiTags('User-controller')
 @ApiBearerAuth()
@@ -19,7 +20,19 @@ export class UserController {
   })
   @UseGuards(JwtAuthGuard)
   @Get('get')
-  async get(@UserEmail() email: string) {
-    return this.userService.get(email);
+  async get(@UserEmail() email: string): Promise<UserResponse> {
+    return this.userService.getUser(email);
+  }
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Update successfully',
+    type: UserResponse,
+    links: {},
+  })
+  @UseGuards(JwtAuthGuard)
+  @Patch('update/:id')
+  async update(@Param('id') id: string, @Body() dto: UpdateUserDto): Promise<UserResponse> {
+    return this.userService.updateUser(id, dto);
   }
 }
