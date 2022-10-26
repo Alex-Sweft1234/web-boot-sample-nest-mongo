@@ -19,10 +19,10 @@ export class UserService {
 
     return this.responseSuccess(
       {
-        ...user,
-        password_hash: undefined,
-        createdAt: undefined,
-        updatedAt: undefined,
+        _id: user._id,
+        first_name: user.first_name,
+        email: user.email,
+        phone: user.phone,
       },
       HttpStatus.OK,
       [MESSAGE.SUCCESS_REQUEST_USER],
@@ -32,16 +32,16 @@ export class UserService {
 
   async updateUser(id: string, updateData: UpdateUserDto): Promise<UserResponse> {
     const objectId = new Types.ObjectId(id);
-    const newDataUser = await this.userModel.findByIdAndUpdate(objectId, updateData, { new: true });
+    const user = await this.userModel.findByIdAndUpdate(objectId, updateData, { new: true });
 
-    if (!newDataUser) throw new NotFoundException(MESSAGE.USER_NOT_FOUND);
+    if (!user) throw new NotFoundException(MESSAGE.USER_NOT_FOUND);
 
     return this.responseSuccess(
       {
-        _id: newDataUser._id,
-        first_name: newDataUser.first_name,
-        email: newDataUser.email,
-        phone: newDataUser.phone,
+        _id: user._id,
+        first_name: user.first_name,
+        email: user.email,
+        phone: user.phone,
       },
       HttpStatus.OK,
       [MESSAGE.SUCCESS_UPDATE_USER],
