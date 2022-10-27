@@ -3,7 +3,7 @@ import { SignupDto, SigninDto } from './dto/auth.dto';
 import { ApiBasicAuth, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { MESSAGE } from './auth.constants';
-import { SignupResponse, SigninResponse } from './auth.model';
+import { SignupResponse, SigninResponse } from './dto/auth.response';
 import { BasicGuard, JwtRefreshTokenGuard } from '../_guards';
 import { UserEmail } from '../_decorators';
 

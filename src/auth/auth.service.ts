@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { SignupModel, SigninModel, SignupResponse, SigninResponse } from './auth.model';
+import { SignupModel, SigninModel } from './auth.model';
+import { SignupResponse, SigninResponse } from './dto/auth.response';
 import { SignupDto } from './dto/auth.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { compare, genSalt, hash } from 'bcryptjs';

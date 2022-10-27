@@ -2,7 +2,7 @@ import { Controller, Get, Patch, HttpStatus, UseGuards, Body, Param } from '@nes
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../_guards';
 import { UserService } from './user.service';
-import { UserResponse } from './user.model';
+import { UserResponse } from './dto/user.response';
 import { UserEmail } from '../_decorators';
 import { UpdateUserDto } from './dto/user.dto';
 

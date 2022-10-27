@@ -11,13 +11,6 @@ export const config = new DocumentBuilder()
   .setTitle(SWAGGER.TITLE)
   .setVersion(SWAGGER.VERSION)
   .setDescription(SWAGGER.DESCRIPTION)
-  // .addBearerAuth(
-  //   {
-  //     type: 'http',
-  //     description: SWAGGER.BEARER_DESCRIPTION,
-  //   },
-  //   'Authorization',
-  // )
   .addBasicAuth()
   .addBearerAuth()
   .build();

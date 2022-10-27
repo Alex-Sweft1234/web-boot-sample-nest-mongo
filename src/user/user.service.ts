@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { UserModel, UserResponse } from './user.model';
+import { UserModel } from './user.model';
+import { UserResponse } from './dto/user.response';
 import { InjectModel } from 'nestjs-typegoose';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { MESSAGE, STATUS } from './user.constants';
