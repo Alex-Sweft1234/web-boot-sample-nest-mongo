@@ -4,4 +4,5 @@ export const STATUS = {
 
 export const MESSAGE = {
   SUCCESS_UPLOAD: 'Загрузка файла прошла успешно',
+  BAD_REQUEST_UPLOAD: 'Файл не отправлен',
 };
