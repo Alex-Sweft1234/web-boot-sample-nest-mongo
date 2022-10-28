@@ -14,5 +14,5 @@ export class MultipleUploadFilesDataDto {
   user_id: string;
 
   @ApiFile({ isArray: true })
-  files: Express.Multer.File[];
+  files: Array<Express.Multer.File>;
 }

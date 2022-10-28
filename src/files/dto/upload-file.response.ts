@@ -10,9 +10,6 @@ export class FileElement {
 }
 
 export class UploadFiles {
-  @ApiProperty({ type: Types.ObjectId })
-  user_id: Types.ObjectId;
-
   @ApiProperty({ type: [FileElement] })
   upload_files: FileElement[];
 }

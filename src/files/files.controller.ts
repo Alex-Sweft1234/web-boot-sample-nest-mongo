@@ -8,11 +8,11 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../_guards';
 import { UploadFilesResponse } from './dto/upload-file.response';
-import { FilesService, FileSingleToBodyInterceptor, FileMultipleToBodyInterceptor } from './files.service';
+import { FilesService, FileSingleToBodyInterceptor, FileMultipleToBodyInterceptor } from './service';
 import { SingleUploadFileDataDto, MultipleUploadFilesDataDto } from './dto/upload-files.dto';
 import { MESSAGE } from './files.constant';
 
@@ -34,31 +34,29 @@ export class FilesController {
     type: UploadFilesResponse,
     links: {},
   })
-  async uploadSingleFile(@Body() body: SingleUploadFileDataDto): Promise<UploadFilesResponse> {
-    if (!body.file) {
+  async uploadSingleFile(@Body() dto: SingleUploadFileDataDto): Promise<UploadFilesResponse> {
+    if (!dto.file) {
       throw new BadRequestException([MESSAGE.BAD_REQUEST_UPLOAD]);
     }
-    return this.filesService.saveSingleFile(body);
+    return this.filesService.saveSingleFile(dto);
   }
 
   @Post('multiple/upload')
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: MultipleUploadFilesDataDto })
-  @UseInterceptors(FileInterceptor('files'), FileMultipleToBodyInterceptor)
+  @UseInterceptors(FilesInterceptor('files', 2, {}), FileMultipleToBodyInterceptor)
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Upload successfully',
     type: UploadFilesResponse,
     links: {},
   })
-  async uploadMultipleFiles(@Body() body: MultipleUploadFilesDataDto): Promise<UploadFilesResponse> {
-    // return this.filesService.saveMultipleFiles(body);
-    if (!body.files) {
+  async uploadMultipleFiles(@Body() dto: MultipleUploadFilesDataDto): Promise<UploadFilesResponse> {
+    if (!dto.files) {
       throw new BadRequestException([MESSAGE.BAD_REQUEST_UPLOAD]);
     }
-    console.log(body);
-    return;
+    return this.filesService.saveMultipleFiles(dto);
   }
 }
