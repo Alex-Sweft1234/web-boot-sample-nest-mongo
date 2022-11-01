@@ -5,7 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { JwtModule } from '@nestjs/jwt';
-import { getJWTConfig } from '../_configs/jwt.config';
+import { getJWTConfig } from '../_configs';
 import { UserModel } from './user.model';
 
 @Module({
@@ -19,6 +19,10 @@ import { UserModel } from './user.model';
         typegooseClass: UserModel,
         schemaOptions: {
           collection: 'User',
+          timestamps: {
+            createdAt: 'created_date',
+            updatedAt: 'updated_date',
+          },
         },
       },
     ]),

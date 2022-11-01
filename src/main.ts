@@ -3,7 +3,7 @@ import { SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as basicAuth from 'express-basic-auth';
 import { config, options } from './app.swagger';
-import { UnauthorizedExceptionFilter } from './_filters/unauthorized-exception.filter';
+import { UnauthorizedExceptionFilter } from './_filters';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {

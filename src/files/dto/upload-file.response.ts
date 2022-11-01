@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Types } from 'mongoose';
 
 export class FileElement {
   @ApiProperty()
@@ -7,11 +6,6 @@ export class FileElement {
 
   @ApiProperty()
   name: string;
-}
-
-export class UploadFiles {
-  @ApiProperty({ type: [FileElement] })
-  upload_files: FileElement[];
 }
 
 export class UploadDataFiles {
@@ -26,7 +20,7 @@ export class UploadFilesResponse {
   @ApiProperty({ type: UploadDataFiles })
   data: {
     user_id: string;
-    upload_files: UploadFiles;
+    upload_files: FileElement[];
   };
 
   @ApiProperty()

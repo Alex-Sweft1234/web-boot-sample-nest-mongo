@@ -19,6 +19,10 @@ import { JwtStrategy, JwtRefreshStrategy, BasicStrategy } from './strategies';
         typegooseClass: SignupModel,
         schemaOptions: {
           collection: 'User',
+          timestamps: {
+            createdAt: 'created_date',
+            updatedAt: 'updated_date',
+          },
         },
       },
     ]),
