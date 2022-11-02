@@ -6,6 +6,8 @@ import { config, options } from './app.swagger';
 import { UnauthorizedExceptionFilter } from './_filters';
 import { ValidationPipe } from '@nestjs/common';
 
+declare const module: any;
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
@@ -25,5 +27,10 @@ async function bootstrap() {
   SwaggerModule.setup('api/v1/swagger-ui', app, document, options);
 
   await app.listen(process.env.NEST_PORT);
+
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 }
 bootstrap();
