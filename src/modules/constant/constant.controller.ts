@@ -1,6 +1,6 @@
 import { Controller, Get, HttpStatus, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiBasicAuth } from '@nestjs/swagger';
-import { BasicGuard } from 'src/_guards';
+import { BasicGuard } from 'src/components/guards';
 import { ConstantModel } from './constant.model';
 import { ConstantService } from './constant.service';
 

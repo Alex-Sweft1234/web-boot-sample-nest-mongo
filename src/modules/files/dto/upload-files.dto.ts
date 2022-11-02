@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ApiFile } from '../../_decorators/api-files.decorator';
+import { ApiFile } from '../../../components/decorators/api-files.decorator';
 
 export class SingleUploadFileDataDto {
   @ApiProperty({ type: String })

@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../_guards';
+import { JwtAuthGuard } from '../../components';
 import { UploadFilesResponse } from './dto/upload-file.response';
 import { FilesService, FileSingleToBodyInterceptor, FileMultipleToBodyInterceptor } from './service';
 import { SingleUploadFileDataDto, MultipleUploadFilesDataDto } from './dto/upload-files.dto';

@@ -1,22 +1,22 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PassportModule } from '@nestjs/passport';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import { TypegooseModule } from 'nestjs-typegoose';
+import { SignupModel } from './auth.model';
 import { JwtModule } from '@nestjs/jwt';
-import { getJWTConfig } from '../_configs';
-import { UserModel } from './user.model';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { getJWTConfig } from '../../_configs';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy, JwtRefreshStrategy, BasicStrategy } from './strategies';
 
 @Module({
-  controllers: [UserController],
-  providers: [UserService],
+  controllers: [AuthController],
+  providers: [AuthService, BasicStrategy, JwtStrategy, JwtRefreshStrategy],
   imports: [
-    ConfigModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     TypegooseModule.forFeature([
       {
-        typegooseClass: UserModel,
+        typegooseClass: SignupModel,
         schemaOptions: {
           collection: 'User',
           timestamps: {
@@ -33,4 +33,4 @@ import { UserModel } from './user.model';
     }),
   ],
 })
-export class UserModule {}
+export class AuthModule {}

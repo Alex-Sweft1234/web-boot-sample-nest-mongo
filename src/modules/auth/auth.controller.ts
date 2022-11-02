@@ -4,8 +4,7 @@ import { ApiBasicAuth, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/
 import { AuthService } from './auth.service';
 import { MESSAGE } from './auth.constants';
 import { SignupResponse, SigninResponse } from './dto/auth.response';
-import { BasicGuard, JwtRefreshTokenGuard } from '../_guards';
-import { UserEmail } from '../_decorators';
+import { BasicGuard, JwtRefreshTokenGuard, UserEmail } from '../../components';
 
 @ApiTags('Auth-controller')
 @ApiBasicAuth()
