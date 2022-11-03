@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AdminController } from './admin.controller';
-import { AdminService } from './admin.service';
+import { AdminService } from './services';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getJWTConfig } from '../../_configs';
 import { PassportModule } from '@nestjs/passport';
 import { TypegooseModule } from 'nestjs-typegoose';
-import { SigninModel } from './models';
+import { SigninAdminModel } from './models';
 
 @Module({
   controllers: [AdminController],
@@ -15,7 +15,7 @@ import { SigninModel } from './models';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     TypegooseModule.forFeature([
       {
-        typegooseClass: SigninModel,
+        typegooseClass: SigninAdminModel,
         schemaOptions: {
           collection: 'Admins',
         },

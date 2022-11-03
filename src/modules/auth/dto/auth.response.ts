@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class InfoUser {
+class InfoUser {
   @ApiProperty()
   email: string;
 
@@ -25,7 +25,7 @@ export class SignupResponse {
   success: string;
 }
 
-export class PrivateToken {
+class PrivateToken {
   @ApiProperty()
   token_type: string;
 

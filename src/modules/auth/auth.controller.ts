@@ -1,10 +1,19 @@
-import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 import { SignupDto, SigninDto } from './dto/auth.dto';
 import { ApiBasicAuth, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { MESSAGE } from './auth.constants';
 import { SignupResponse, SigninResponse } from './dto/auth.response';
-import { BasicGuard, JwtRefreshTokenGuard, UserEmail } from '../../components';
+import { BasicGuard, JwtRefreshTokenGuard, UserEmail, UnauthorizedExceptionFilter } from '../../components';
 
 @ApiTags('Auth-controller')
 @ApiBasicAuth()
@@ -12,14 +21,14 @@ import { BasicGuard, JwtRefreshTokenGuard, UserEmail } from '../../components';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Post('signup')
+  @UseGuards(BasicGuard)
   @ApiCreatedResponse({
     status: HttpStatus.CREATED,
     description: 'Created successfully',
     type: SignupResponse,
     links: {},
   })
-  @UseGuards(BasicGuard)
-  @Post('signup')
   async signup(@Body() dto: SignupDto): Promise<SignupResponse> {
     const oldUser = await this.authService.findUser(dto.email);
     if (oldUser) {
@@ -28,29 +37,30 @@ export class AuthController {
     return this.authService.createUser(dto);
   }
 
+  @Post('signin')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(BasicGuard)
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get successfully',
     type: SigninResponse,
     links: {},
   })
-  @UseGuards(BasicGuard)
-  @HttpCode(HttpStatus.OK)
-  @Post('signin')
   async signin(@Body() { login, password }: SigninDto): Promise<SigninResponse> {
     const { email } = await this.authService.validateUser(login, password);
     return this.authService.login({ email });
   }
 
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtRefreshTokenGuard)
+  @UseFilters(new UnauthorizedExceptionFilter())
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get successfully',
     type: SigninResponse,
     links: {},
   })
-  @UseGuards(JwtRefreshTokenGuard)
-  @HttpCode(HttpStatus.OK)
-  @Post('refresh')
   async refresh(@UserEmail() email: string): Promise<SigninResponse> {
     return this.authService.refresh(email);
   }

@@ -10,14 +10,14 @@ import { ConstantService } from './constant.service';
 export class ConstantController {
   constructor(private readonly constantService: ConstantService) {}
 
+  @Get()
+  @UseGuards(BasicGuard)
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get successfully',
     type: ConstantModel,
     links: {},
   })
-  @UseGuards(BasicGuard)
-  @Get()
   async get() {
     return this.constantService.get();
   }

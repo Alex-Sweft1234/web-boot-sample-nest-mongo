@@ -3,7 +3,6 @@ import { SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as basicAuth from 'express-basic-auth';
 import { config, options } from './app.swagger';
-import { UnauthorizedExceptionFilter } from './components';
 import { ValidationPipe } from '@nestjs/common';
 
 declare const module: any;
@@ -13,7 +12,6 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalFilters(new UnauthorizedExceptionFilter());
   app.use(
     ['/api/v1/swagger-ui', '/api/v1/swagger-ui-json'],
     basicAuth({
