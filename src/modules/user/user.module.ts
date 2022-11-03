@@ -18,7 +18,7 @@ import { UserModel } from './user.model';
       {
         typegooseClass: UserModel,
         schemaOptions: {
-          collection: 'User',
+          collection: 'Users',
           timestamps: {
             createdAt: 'created_date',
             updatedAt: 'updated_date',
