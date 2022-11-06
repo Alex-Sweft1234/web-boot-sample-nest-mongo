@@ -2,16 +2,16 @@ import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from 'nestjs-typegoose';
-import { SigninAdminModel } from '../models';
+import { AdminModel } from '../models';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { MESSAGE, STATUS } from '../admin.constants';
 import { compare } from 'bcryptjs';
-import { LoginResponse } from '../dto';
+import { AdminResponse, LoginResponse } from '../dto';
 
 @Injectable()
 export class AdminService {
   constructor(
-    @InjectModel(SigninAdminModel) private readonly SigninAdminModel: ModelType<SigninAdminModel>,
+    @InjectModel(AdminModel) private readonly adminModel: ModelType<AdminModel>,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {}
@@ -28,10 +28,10 @@ export class AdminService {
   }
 
   async findUser(login: string) {
-    return this.SigninAdminModel.findOne({ login }).exec();
+    return this.adminModel.findOne({ login }).exec();
   }
 
-  async validateAdmin(login: string, password: string): Promise<Pick<SigninAdminModel, 'login'>> {
+  async validateAdmin(login: string, password: string): Promise<Pick<AdminModel, 'login'>> {
     const user = await this.findUser(login);
 
     if (!user) throw new UnauthorizedException([MESSAGE.USER_NOT_FOUND]);
@@ -46,5 +46,19 @@ export class AdminService {
     const privateToken = await this.privateToken(payload);
 
     return this.responseSuccessful(privateToken, HttpStatus.OK, [MESSAGE.SUCCESS_AUTH], STATUS.SUCCESS_STATUS_REQUEST);
+  }
+
+  async getAdmin(login: string): Promise<AdminResponse> {
+    const admin = await this.adminModel.findOne({ login }).exec();
+
+    return this.responseSuccessful(
+      {
+        _id: admin._id,
+        login: admin.login,
+      },
+      HttpStatus.OK,
+      [MESSAGE.SUCCESS_REQUEST_ADMIN],
+      STATUS.SUCCESS_STATUS_REQUEST,
+    );
   }
 }

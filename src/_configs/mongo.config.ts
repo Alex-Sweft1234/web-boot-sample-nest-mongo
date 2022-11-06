@@ -8,17 +8,7 @@ export const getMongoConfig = async (configService: ConfigService): Promise<Type
   };
 };
 
-const getMongoString = (configService: ConfigService) =>
-  'mongodb://' +
-  configService.get('MONGO_LOGIN') +
-  ':' +
-  configService.get('MONGO_PASSWORD') +
-  '@' +
-  configService.get('MONGO_HOST') +
-  ':' +
-  configService.get('MONGO_PORT') +
-  '/' +
-  configService.get('MONGO_DATABASE');
+const getMongoString = (configService: ConfigService) => 'mongodb://admin:admin@localhost:27017/?authSource=admin';
 
 const getMongoOptions = () => ({
   useNewUrlParser: true,

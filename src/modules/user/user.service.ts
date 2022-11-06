@@ -11,14 +11,14 @@ import { Types } from 'mongoose';
 export class UserService {
   constructor(@InjectModel(UserModel) private readonly userModel: ModelType<UserModel>) {}
 
-  responseSuccess(data: any, statusCode: HttpStatus.OK, message: string[], success: string) {
+    responseSuccessful(data: any, statusCode: HttpStatus.OK, message: string[], success: string) {
     return { data, statusCode, message, success };
   }
 
   async getUser(email: string): Promise<UserResponse> {
     const user = await this.userModel.findOne({ email }).exec();
 
-    return this.responseSuccess(
+    return this.responseSuccessful(
       {
         _id: user._id,
         first_name: user.first_name,
@@ -37,7 +37,7 @@ export class UserService {
 
     if (!user) throw new NotFoundException(MESSAGE.USER_NOT_FOUND);
 
-    return this.responseSuccess(
+    return this.responseSuccessful(
       {
         _id: user._id,
         first_name: user.first_name,

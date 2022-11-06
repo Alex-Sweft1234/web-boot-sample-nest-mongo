@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { prop } from '@typegoose/typegoose';
-import { Base } from '@typegoose/typegoose/lib/defaultClasses';
+import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 
-export interface SigninAdminModel extends Base {}
+export interface AdminModel extends Base {}
 
-export class SigninAdminModel {
+export class AdminModel extends TimeStamps {
   @ApiProperty()
   @prop({ unique: true })
   login: string;
