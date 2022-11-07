@@ -8,6 +8,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { AdminModel } from './models';
 import { JwtAdminStrategy } from '../../components';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   controllers: [AdminController],
@@ -27,6 +28,7 @@ import { JwtAdminStrategy } from '../../components';
       inject: [ConfigService],
       useFactory: getJWTAdminConfig,
     }),
+    UsersModule,
   ],
 })
 export class AdminModule {}

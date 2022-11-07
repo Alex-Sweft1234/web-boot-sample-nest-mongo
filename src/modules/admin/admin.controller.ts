@@ -1,10 +1,10 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { AdminLogin, BasicGuard, JwtAdminGuard } from '../../components';
 import { AdminService } from './services';
-import { ApiBasicAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiExcludeController } from '@nestjs/swagger';
 import { LoginResponse, LoginDto, AdminResponse } from './dto';
 
-@ApiTags('Admin-controller')
+@ApiExcludeController()
 @Controller('admin')
 @ApiBasicAuth()
 export class AdminController {
@@ -13,12 +13,6 @@ export class AdminController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @UseGuards(BasicGuard)
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Get successfully',
-    type: LoginResponse,
-    links: {},
-  })
   async login(@Body() { username, password }: LoginDto): Promise<LoginResponse> {
     const { login } = await this.adminService.validateAdmin(username, password);
     return this.adminService.login({ login });
@@ -26,13 +20,7 @@ export class AdminController {
 
   @Get('get')
   @UseGuards(JwtAdminGuard)
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Get successfully',
-    type: AdminResponse,
-    links: {},
-  })
   async get(@AdminLogin() login: string): Promise<AdminResponse> {
-    return this.adminService.get(login);
+    return this.adminService.getAdmin(login);
   }
 }
