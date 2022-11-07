@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { LoginDto } from './admin.dto';
 import { Types } from 'mongoose';
+import { AdminModel } from '../models';
 
 class LoginPrivateToken {
   @ApiProperty()
@@ -28,10 +28,11 @@ export class LoginResponse {
 }
 
 export class AdminResponse {
-  @ApiProperty({ type: LoginDto })
+  @ApiProperty({ type: AdminModel })
   data: {
     _id: Types.ObjectId;
     login: string;
+    role: string;
   };
 
   @ApiProperty()

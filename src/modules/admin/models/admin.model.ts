@@ -11,5 +11,9 @@ export class AdminModel extends TimeStamps {
 
   @ApiProperty()
   @prop()
+  role: string;
+
+  @ApiProperty()
+  @prop()
   password_hash: string;
 }

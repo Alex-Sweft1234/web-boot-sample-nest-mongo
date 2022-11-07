@@ -48,13 +48,15 @@ export class AdminService {
     return this.responseSuccessful(privateToken, HttpStatus.OK, [MESSAGE.SUCCESS_AUTH], STATUS.SUCCESS_STATUS_REQUEST);
   }
 
-  async getAdmin(login: string): Promise<AdminResponse> {
+  async get(login: string): Promise<AdminResponse> {
     const admin = await this.adminModel.findOne({ login }).exec();
+    if (!admin) throw new UnauthorizedException([MESSAGE.USER_NOT_FOUND]);
 
     return this.responseSuccessful(
       {
         _id: admin._id,
         login: admin.login,
+        role: admin.role,
       },
       HttpStatus.OK,
       [MESSAGE.SUCCESS_REQUEST_ADMIN],

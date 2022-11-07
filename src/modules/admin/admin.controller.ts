@@ -32,7 +32,7 @@ export class AdminController {
     type: AdminResponse,
     links: {},
   })
-  async getA(@AdminLogin() login: string): Promise<AdminResponse> {
-    return this.adminService.getAdmin(login);
+  async get(@AdminLogin() login: string): Promise<AdminResponse> {
+    return this.adminService.get(login);
   }
 }
