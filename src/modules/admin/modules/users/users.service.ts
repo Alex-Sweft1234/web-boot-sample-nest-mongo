@@ -3,8 +3,7 @@ import { InjectModel } from 'nestjs-typegoose';
 import { UserModel } from '../../../user/user.model';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { MESSAGE, STATUS } from './users.constant';
-import { UsersResponse } from './dto';
-import { UpdateUserDto } from '../../../user/dto/user.dto';
+import { UpdateUsersDto, UsersResponse } from './dto';
 import { UserResponse } from '../../../user/dto/user.response';
 import { Types } from 'mongoose';
 
@@ -16,18 +15,25 @@ export class UsersService {
     return { data, statusCode, message, success };
   }
 
-  async getUsers(): Promise<UsersResponse> {
-    const users = await this.userModel.find().select(['_id', 'first_name', 'email', 'phone']);
+  async getUsers({ page, perPage }): Promise<UsersResponse> {
+    const users = await this.userModel
+      .find()
+      .select(['_id', 'first_name', 'email', 'phone'])
+      .limit(perPage)
+      .skip(perPage * (page - 1));
+
+    const total = await this.userModel.find().count();
+    const lastPage = Math.ceil(total / Number(perPage));
 
     return this.responseSuccessful(
-      users,
+      { items: users, page: Number(page), per_page: Number(perPage), total: total, last_page: lastPage },
       HttpStatus.OK,
       [MESSAGE.SUCCESS_REQUEST_USERS],
       STATUS.SUCCESS_STATUS_REQUEST,
     );
   }
 
-  async updateUser(id: string, updateData: UpdateUserDto): Promise<UserResponse> {
+  async updateUser(id: string, updateData: UpdateUsersDto): Promise<UserResponse> {
     const objectId = new Types.ObjectId(id);
     const user = await this.userModel
       .findByIdAndUpdate(objectId, updateData, { new: true })

@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { ApiExcludeController } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { UpdateUsersDto, UsersResponse } from './dto';
+import { UpdateUsersDto, queryPaginationDto, UsersResponse } from './dto';
 import { JwtAdminGuard } from '../../../../components';
 
 @ApiExcludeController()
@@ -11,8 +11,8 @@ export class UsersController {
 
   @Get('get')
   @UseGuards(JwtAdminGuard)
-  async get() {
-    return this.usersService.getUsers();
+  async get(@Query() pagination: queryPaginationDto) {
+    return this.usersService.getUsers(pagination);
   }
 
   @Patch('update/:id')
