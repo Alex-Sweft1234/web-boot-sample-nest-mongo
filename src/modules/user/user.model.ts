@@ -16,4 +16,10 @@ export class UserModel extends TimeStamps {
   @ApiProperty()
   @prop()
   phone: string;
+
+  @prop()
+  created_date: Date;
+
+  @prop()
+  updated_date: Date;
 }

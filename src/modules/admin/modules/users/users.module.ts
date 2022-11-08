@@ -13,6 +13,10 @@ import { UserModel } from '../../../user/user.model';
         typegooseClass: UserModel,
         schemaOptions: {
           collection: 'Users',
+          timestamps: {
+            createdAt: 'created_date',
+            updatedAt: 'updated_date',
+          },
         },
       },
     ]),

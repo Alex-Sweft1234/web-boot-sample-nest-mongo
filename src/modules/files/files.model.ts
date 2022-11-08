@@ -13,4 +13,10 @@ export class UploadDataFilesModel extends TimeStamps {
   @ApiProperty({ type: [FileElement] })
   @prop()
   upload_files: FileElement[];
+
+  @prop()
+  created_date: Date;
+
+  @prop()
+  updated_date: Date;
 }

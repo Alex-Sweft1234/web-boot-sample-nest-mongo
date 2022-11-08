@@ -2,7 +2,7 @@ import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from 'nestjs-typegoose';
 import { UserModel } from '../../../user/user.model';
 import { ModelType } from '@typegoose/typegoose/lib/types';
-import { MESSAGE, STATUS } from './users.constant';
+import { MESSAGE, MONTHS, STATUS } from './users.constant';
 import { UpdateUsersDto, UsersResponse } from './dto';
 import { UserResponse } from '../../../user/dto/user.response';
 import { Types } from 'mongoose';
@@ -13,6 +13,37 @@ export class UsersService {
 
   responseSuccessful(data: any, statusCode: HttpStatus.OK, message: string[], success: string) {
     return { data, statusCode, message, success };
+  }
+
+  async getChart(): Promise<any> {
+    const labels: string[] = [];
+    const datasets: number[] = [];
+    const date: Date = new Date();
+    const createDate = await this.userModel.find({}, {}, {}).select(['created_date']).sort('created_date');
+
+    for (let i = 0; i < date.getDate(); i++) {
+      let count = 0;
+      labels.push(`${i + 1} ${MONTHS[date.getMonth()]}`);
+
+      for (let k = 0; k < createDate.length; k++) {
+        if (i + 1 === createDate[k]?.created_date.getDate()) {
+          count++;
+        }
+      }
+
+      datasets.push(count);
+      count = 0;
+    }
+
+    return this.responseSuccessful(
+      {
+        labels: labels,
+        datasets: datasets,
+      },
+      HttpStatus.OK,
+      [MESSAGE.SUCCESS_REQUEST_CHART],
+      STATUS.SUCCESS_STATUS_REQUEST,
+    );
   }
 
   async getUsers({ page, perPage }): Promise<UsersResponse> {

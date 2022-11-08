@@ -9,9 +9,15 @@ import { JwtAdminGuard } from '../../../../components';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get('chart/get')
+  @UseGuards(JwtAdminGuard)
+  async getChart() {
+    return this.usersService.getChart();
+  }
+
   @Get('get')
   @UseGuards(JwtAdminGuard)
-  async get(@Query() pagination: queryPaginationDto) {
+  async getUsers(@Query() pagination: queryPaginationDto) {
     return this.usersService.getUsers(pagination);
   }
 
