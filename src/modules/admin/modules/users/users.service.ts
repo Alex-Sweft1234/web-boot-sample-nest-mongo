@@ -22,7 +22,7 @@ export class UsersService {
       .limit(perPage)
       .skip(perPage * (page - 1));
 
-    const total = await this.userModel.find().count();
+    const total = await this.userModel.count();
     const lastPage = Math.ceil(total / Number(perPage));
 
     return this.responseSuccessful(
