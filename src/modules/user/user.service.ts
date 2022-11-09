@@ -6,19 +6,15 @@ import { ModelType } from '@typegoose/typegoose/lib/types';
 import { MESSAGE, STATUS } from './user.constants';
 import { UpdateUserDto } from './dto/user.dto';
 import { Types } from 'mongoose';
+import { responseSuccessful } from '../../utils';
 
 @Injectable()
 export class UserService {
   constructor(@InjectModel(UserModel) private readonly userModel: ModelType<UserModel>) {}
 
-  responseSuccessful(data: any, statusCode: HttpStatus.OK, message: string[], success: string) {
-    return { data, statusCode, message, success };
-  }
-
   async getUser(email: string): Promise<UserResponse> {
     const user = await this.userModel.findOne({ email }).select(['_id', 'first_name', 'email', 'phone']).exec();
-
-    return this.responseSuccessful(user, HttpStatus.OK, [MESSAGE.SUCCESS_REQUEST_USER], STATUS.SUCCESS_STATUS_REQUEST);
+    return responseSuccessful(user, HttpStatus.OK, [MESSAGE.SUCCESS_REQUEST_USER], STATUS.SUCCESS_STATUS_REQUEST);
   }
 
   async updateUser(id: string, updateData: UpdateUserDto): Promise<UserResponse> {
@@ -29,6 +25,6 @@ export class UserService {
 
     if (!user) throw new NotFoundException(MESSAGE.USER_NOT_FOUND);
 
-    return this.responseSuccessful(user, HttpStatus.OK, [MESSAGE.SUCCESS_UPDATE_USER], STATUS.SUCCESS_STATUS_REQUEST);
+    return responseSuccessful(user, HttpStatus.OK, [MESSAGE.SUCCESS_UPDATE_USER], STATUS.SUCCESS_STATUS_REQUEST);
   }
 }

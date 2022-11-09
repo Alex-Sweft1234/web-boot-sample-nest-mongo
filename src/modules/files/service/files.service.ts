@@ -7,14 +7,11 @@ import { MESSAGE, STATUS } from '../files.constant';
 import { UploadDataFilesModel } from '../files.model';
 import { InjectModel } from 'nestjs-typegoose';
 import { ModelType } from '@typegoose/typegoose/lib/types';
+import { responseSuccessful } from '../../../utils';
 
 @Injectable()
 export class FilesService {
   constructor(@InjectModel(UploadDataFilesModel) private readonly uploadFilesModel: ModelType<UploadDataFilesModel>) {}
-
-  responseSuccessful(data: any, statusCode: HttpStatus.OK, message: string[], success: string) {
-    return { data, statusCode, message, success };
-  }
 
   async saveSingleFile(data: { user_id: any; file: Express.Multer.File }): Promise<UploadFilesResponse> {
     const { user_id, file } = data;
@@ -35,12 +32,7 @@ export class FilesService {
 
     await uploadFiles.save();
 
-    return this.responseSuccessful(
-      uploadDataModel,
-      HttpStatus.OK,
-      [MESSAGE.SUCCESS_UPLOAD],
-      STATUS.SUCCESS_STATUS_REQUEST,
-    );
+    return responseSuccessful(uploadDataModel, HttpStatus.OK, [MESSAGE.SUCCESS_UPLOAD], STATUS.SUCCESS_STATUS_REQUEST);
   }
 
   async saveMultipleFiles(data: { user_id: any; files: Array<Express.Multer.File> }): Promise<UploadFilesResponse> {
@@ -64,11 +56,6 @@ export class FilesService {
 
     await uploadFiles.save();
 
-    return this.responseSuccessful(
-      uploadDataModel,
-      HttpStatus.OK,
-      [MESSAGE.SUCCESS_UPLOAD],
-      STATUS.SUCCESS_STATUS_REQUEST,
-    );
+    return responseSuccessful(uploadDataModel, HttpStatus.OK, [MESSAGE.SUCCESS_UPLOAD], STATUS.SUCCESS_STATUS_REQUEST);
   }
 }

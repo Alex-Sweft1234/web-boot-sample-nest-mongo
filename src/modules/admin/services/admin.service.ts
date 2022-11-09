@@ -7,6 +7,7 @@ import { ModelType } from '@typegoose/typegoose/lib/types';
 import { MESSAGE, STATUS } from '../admin.constants';
 import { compare } from 'bcryptjs';
 import { AdminResponse, LoginResponse } from '../dto';
+import { responseSuccessful } from '../../../utils';
 
 @Injectable()
 export class AdminService {
@@ -21,10 +22,6 @@ export class AdminService {
     const access_token = await this.jwtService.signAsync(payload);
 
     return { token_type, access_token };
-  }
-
-  responseSuccessful(data: any, statusCode: HttpStatus.OK, message: string[], success: string) {
-    return { data, statusCode, message, success };
   }
 
   async findUser(login: string) {
@@ -45,18 +42,13 @@ export class AdminService {
   async login(payload: { login: string }): Promise<LoginResponse> {
     const privateToken = await this.privateToken(payload);
 
-    return this.responseSuccessful(privateToken, HttpStatus.OK, [MESSAGE.SUCCESS_AUTH], STATUS.SUCCESS_STATUS_REQUEST);
+    return responseSuccessful(privateToken, HttpStatus.OK, [MESSAGE.SUCCESS_AUTH], STATUS.SUCCESS_STATUS_REQUEST);
   }
 
   async getAdmin(login: string): Promise<AdminResponse> {
     const admin = await this.adminModel.findOne({ login }).select(['_id', 'login', 'role']).exec();
     if (!admin) throw new UnauthorizedException([MESSAGE.USER_NOT_FOUND]);
 
-    return this.responseSuccessful(
-      admin,
-      HttpStatus.OK,
-      [MESSAGE.SUCCESS_REQUEST_ADMIN],
-      STATUS.SUCCESS_STATUS_REQUEST,
-    );
+    return responseSuccessful(admin, HttpStatus.OK, [MESSAGE.SUCCESS_REQUEST_ADMIN], STATUS.SUCCESS_STATUS_REQUEST);
   }
 }

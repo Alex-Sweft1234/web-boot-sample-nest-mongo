@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiExcludeController } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { UpdateUsersDto, queryPaginationDto, UsersResponse } from './dto';
+import { UpdateUsersDto, queryPaginationDto, UsersResponse, UsersListResponse } from './dto';
 import { JwtAdminGuard } from '../../../../components';
 
 @ApiExcludeController()
@@ -9,15 +9,16 @@ import { JwtAdminGuard } from '../../../../components';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get('chart/get')
+  @Post('chart/get')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAdminGuard)
-  async getChart() {
-    return this.usersService.getChart();
+  async getChart(@Body() dto: { month?: number }) {
+    return this.usersService.getChart(dto?.month);
   }
 
   @Get('get')
   @UseGuards(JwtAdminGuard)
-  async getUsers(@Query() pagination: queryPaginationDto) {
+  async getUsers(@Query() pagination: queryPaginationDto): Promise<UsersListResponse> {
     return this.usersService.getUsers(pagination);
   }
 

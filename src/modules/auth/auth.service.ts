@@ -8,6 +8,7 @@ import { ModelType } from '@typegoose/typegoose/lib/types';
 import { MESSAGE, STATUS } from './auth.constants';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { responseSuccessful } from '../../utils';
 
 @Injectable()
 export class AuthService {
@@ -43,10 +44,6 @@ export class AuthService {
     return { email: user.email };
   }
 
-  responseSuccessful(data: any, statusCode: HttpStatus.CREATED | HttpStatus.OK, message: string[], success: string) {
-    return { data, statusCode, message, success };
-  }
-
   async createUser({ first_name, email, phone, password }: SignupDto): Promise<SignupResponse> {
     const salt = await genSalt(10);
     const newUser = new this.signupModel({
@@ -58,7 +55,7 @@ export class AuthService {
 
     await newUser.save();
 
-    return this.responseSuccessful(
+    return responseSuccessful(
       { email, phone },
       HttpStatus.CREATED,
       [MESSAGE.SUCCESS_REGISTRATION],
@@ -68,15 +65,13 @@ export class AuthService {
 
   async login(payload: { email: string }): Promise<SigninResponse> {
     const privateToken = await this.privateToken(payload);
-
-    return this.responseSuccessful(privateToken, HttpStatus.OK, [MESSAGE.SUCCESS_AUTH], STATUS.SUCCESS_STATUS_REQUEST);
+    return responseSuccessful(privateToken, HttpStatus.OK, [MESSAGE.SUCCESS_AUTH], STATUS.SUCCESS_STATUS_REQUEST);
   }
 
   async refresh(email: string): Promise<SigninResponse> {
     const payload = { email };
     const privateToken = await this.privateToken(payload);
-
-    return this.responseSuccessful(
+    return responseSuccessful(
       privateToken,
       HttpStatus.OK,
       [MESSAGE.SUCCESS_UPDATE_ACCESS_TOKEN],
